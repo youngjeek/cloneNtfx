@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link, useRouteMatch } from 'react-router-dom';
-
+import { useState } from 'react';
+//style component 정의
 const Nav = styled.nav`
   width: 100vw;
   height: 50px;
@@ -15,28 +16,9 @@ const Nav = styled.nav`
   font-size: 14px;
   color: ${(props) => props.theme.white.lighter};
 `;
-
 const Column = styled.div`
   display: flex;
   align-items: center;
-`;
-const Logo = styled(motion.svg)`
-  /* <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --> */
-  width: 50px;
-  height: 30px;
-  display: flex;
-  margin-right: 10px;
-  fill: ${(props) => props.theme.white.lighter};
-  path {
-    stroke-width: 6px;
-    stroke: white;
-  }
-`;
-const Search = styled.span`
-  color: white;
-  svg {
-    height: 25px;
-  }
 `;
 const Tabs = styled.ul`
   display: flex;
@@ -54,7 +36,22 @@ const Tab = styled(motion.li)`
     color: ${(props) => props.theme.white.lighter};
   }
 `;
-const Circle = styled.span`
+const Search = styled(motion.span)`
+  color: white;
+  svg {
+    height: 25px;
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const InputSearch = styled(motion.input)`
+  transform-origin: left center;
+  position: absolute;
+  margin-left: 10px;
+  position: relative;
+`;
+const Circle = styled(motion.span)`
   position: absolute;
   width: 5px;
   height: 5px;
@@ -65,6 +62,19 @@ const Circle = styled.span`
   margin: 0 auto;
   background-color: ${(props) => props.theme.white.lighter};
 `;
+const Logo = styled(motion.svg)`
+  /* <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --> */
+  width: 50px;
+  height: 30px;
+  display: flex;
+  margin-right: 10px;
+  fill: ${(props) => props.theme.white.lighter};
+  path {
+    stroke-width: 6px;
+    stroke: white;
+  }
+`;
+//Framer Variants 모음
 const logoVariants = {
   initial: {
     fillOpacity: 1,
@@ -84,10 +94,13 @@ const tabVariants = {
 };
 
 function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useRouteMatch('/');
   const tvMatch = useRouteMatch('/tv');
   const profileMatch = useRouteMatch('/profile');
   const settingMatch = useRouteMatch('/setting');
+
+  const activeSearch = () => setSearchOpen((prev) => !prev);
   return (
     <>
       <Nav>
@@ -108,27 +121,38 @@ function Header() {
           <Tab variants={tabVariants} whileHover="hover">
             <Link to="/tv">Tv {tvMatch && <Circle />}</Link>
           </Tab>
-        </Column>
-        <Column>
           <Search>
-            <svg
+            <InputSearch
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, scaleX: searchOpen ? 1 : 0 }}
+              placeholder="text what you want to see"
+            ></InputSearch>
+            <motion.svg
+              onClick={activeSearch}
+              animate={{ x: searchOpen ? 5 : -170 }}
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
+              <motion.path
                 fillRule="evenodd"
                 d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                 clipRule="evenodd"
-              ></path>
-            </svg>
+              ></motion.path>
+            </motion.svg>
           </Search>
+        </Column>
+        <Column>
           <Tabs>
             <Tab variants={tabVariants} whileHover="hover">
-              <Link to="/profile">Profile{profileMatch && <Circle />}</Link>
+              <Link to="/profile">
+                Profile{profileMatch && <Circle layoutId="tabMenu" />}
+              </Link>
             </Tab>
             <Tab variants={tabVariants} whileHover="hover">
-              <Link to="/setting">Setting{settingMatch && <Circle />}</Link>
+              <Link to="/setting">
+                Setting{settingMatch && <Circle layoutId="tabMenu" />}
+              </Link>
             </Tab>
           </Tabs>
         </Column>
