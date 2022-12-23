@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Header from './Components/Header';
 import Home from './Routes/Home';
@@ -9,14 +8,14 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
         <Route path="/tv">
           <Tv />
         </Route>
         <Route path="/search">
           <Search />
+        </Route>
+        <Route path={['/', '/movies/:movieId']}>
+          <Home />
         </Route>
       </Switch>
     </Router>
