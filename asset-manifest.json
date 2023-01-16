@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/multiflix/static/js/main.f6443c64.js",
+    "index.html": "/multiflix/index.html",
+    "main.f6443c64.js.map": "/multiflix/static/js/main.f6443c64.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.f6443c64.js"
+  ]
+}
