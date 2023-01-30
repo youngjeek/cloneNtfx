@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { motion, useAnimation, useScroll, useTransform } from 'framer-motion';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import authService from '../login';
 interface ISearchForm {
   keyword: string;
 }
@@ -51,7 +52,7 @@ const Search = styled(motion.form)`
 `;
 const InputSearch = styled(motion.input)`
   transform-origin: left center;
-  margin-left: 10px;
+  margin-left: 30px;
   position: relative;
 `;
 const Circle = styled(motion.span)`
@@ -95,10 +96,22 @@ const tabVariants = {
 };
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
-  const homeMatch = useRouteMatch('/');
+  const homeMatch = useRouteMatch('/multiflix');
   const tvMatch = useRouteMatch('/tv');
   const profileMatch = useRouteMatch('/profile');
   const settingMatch = useRouteMatch('/setting');
+  //sign-in
+  const [isSignIn, setSignIn] = useState(false);
+  useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        setSignIn(true);
+      } else {
+        setSignIn(false);
+      }
+    });
+  });
+
   const inputAnimation = useAnimation();
   const { scrollY } = useScroll();
   const activeSearch = () => {
@@ -132,7 +145,7 @@ function Header() {
     <>
       <Nav style={{ background: scrollGradient }}>
         <Column>
-          <Link to="/">
+          <Link to="/multiflix">
             <Logo
               variants={logoVariants}
               whileHover="active"
@@ -714,7 +727,7 @@ function Header() {
           </Link>
           <Tabs />
           <Tab variants={tabVariants} whileHover="hover">
-            <Link to="/">
+            <Link to="/multiflix">
               Movie {homeMatch?.isExact && <Circle layoutId="tabMenu" />}
             </Link>
           </Tab>
@@ -751,9 +764,8 @@ function Header() {
               </Link>
             </Tab>
             <Tab variants={tabVariants} whileHover="hover">
-              <Link to="/setting">
-                Setting{settingMatch && <Circle layoutId="tabMenu" />}
-              </Link>
+              <Link to="/setting">{isSignIn ? 'Setting' : 'Sign-In'}</Link>
+              {settingMatch && <Circle layoutId="tabMenu" />}
             </Tab>
           </Tabs>
         </Column>
